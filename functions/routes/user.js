@@ -4,7 +4,7 @@ const config = require('../utility/config');
 const firebase = require('firebase');
 firebase.initializeApp(config);
 
-const { validateSignUpData, validateLoginData } = require('../utility/validation');
+const { validateSignUpData, validateLoginData, validateUserDetails } = require('../utility/validation');
 
 exports.signup = (req, res) => {
     const newUser = {
@@ -139,4 +139,38 @@ exports.uploadImage = (req, res) => {
         });
     });
     busboy.end(req.rawBody);
+}
+
+exports.addUserDetails = (req, res) => {
+    let userDetails = validateUserDetails(req.body);
+
+    db
+        .doc(`/users/${req.user.handle}`)
+        .update(userDetails)
+        .then(() => {
+            return res.json({ message: 'Details added successfully' });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.code });
+        });
+}
+
+exports.getUserDetails = (req, res) => {
+    let userData = {};
+
+    db
+        .doc(`/users/${req.user.handle}`)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                userData.credentials = doc.data();
+            }
+        })
+        .then(() => {
+            return res.json(userData);
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        });
 }
