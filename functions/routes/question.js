@@ -42,3 +42,25 @@ exports.addQuestionOnTodo = (req, res) => {
             res.status(500).json({ error: err.code });
         });
 }
+
+exports.deleteQuestion = (req, res) => {
+    const document = db.doc(`/question/${req.params.questionId}`);
+
+    document
+        .get()
+        .then(doc => {
+            if (!doc.exists) {
+                return res.status(404).json({
+                    error: 'Question not found'
+                });
+            }
+            return document.delete();
+        })
+        .then(() => {
+            res.json({ message: 'Question deleted successfully' });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        })
+}

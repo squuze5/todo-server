@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 
 const FBAuth = require('./utility/fbAuth');
-const { addQuestionOnTodo } = require('./routes/question');
+const { addQuestionOnTodo, deleteQuestion } = require('./routes/question');
 const { 
     getAllTodo, 
     postOneTodo, 
@@ -28,7 +28,7 @@ app.delete('/todo/:todoId', FBAuth, deleteTodo);
 
 // Question routes
 app.post('/todo/:todoId/addQuestion', FBAuth, addQuestionOnTodo);
-// TODO: delete question by id
+app.delete('/question/:questionId', FBAuth, deleteQuestion);
 // TODO: edit question
 
 // User routes
