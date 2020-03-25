@@ -25,6 +25,11 @@ exports.addQuestionOnTodo = (req, res) => {
                     error: 'Todo not found'
                 });
             }
+            return doc
+                .ref
+                .update({ questionCount: doc.data().questionCount + 1 });
+        })
+        .then(() => {
             return db
                 .collection('question')
                 .add(newQuestion);
