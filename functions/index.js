@@ -3,13 +3,20 @@ const express = require('express');
 const app = express();
 
 const FBAuth = require('./utility/fbAuth');
-const { addQuestionOnTodo, deleteQuestion } = require('./routes/question');
+const { 
+    addQuestionOnTodo, 
+    deleteQuestion, 
+    editQuestion 
+} = require('./routes/question');
+
 const { 
     getAllTodo, 
     postOneTodo, 
     getTodo, 
-    deleteTodo 
+    deleteTodo,
+    editTodo
 } = require('./routes/todo');
+
 const { 
     signup, 
     login, 
@@ -23,13 +30,13 @@ app.get('/todo', getAllTodo);
 app.post('/todo', FBAuth, postOneTodo);
 app.get('/todo/:todoId', getTodo);
 app.delete('/todo/:todoId', FBAuth, deleteTodo);
-// TODO: edit todo
+app.post('/todo/:todoId', FBAuth, editTodo);
 // TODO: when deleting todo, delete all question to todo id 
 
 // Question routes
 app.post('/todo/:todoId/addQuestion', FBAuth, addQuestionOnTodo);
 app.delete('/question/:questionId', FBAuth, deleteQuestion);
-// TODO: edit question
+app.post('/question/:questionId', FBAuth, editQuestion);
 
 // User routes
 app.post('/signup', signup);

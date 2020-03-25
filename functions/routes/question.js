@@ -43,6 +43,41 @@ exports.addQuestionOnTodo = (req, res) => {
         });
 }
 
+exports.editQuestion = (req, res) => {
+    const document = db.doc(`/question/${req.params.questionId}`);
+    let editQuestion = {
+        name: req.body.name
+    }
+
+    if (editQuestion.name == '') {
+        res.status(400).json({ error: 'Must not be empty' });
+    }
+
+    document
+        .get()
+        .then(doc => {
+            if (!doc.exists) {
+                return res.status(404).json({
+                    error: 'Question not found'
+                });
+            }
+            if (doc.data().userHandle !== req.user.handle) {
+                return res.status(403).json({
+                    error: 'Unauthorized'
+                });
+            } else {
+                return document.update(editQuestion);
+            }
+        })
+        .then(() => {
+            res.json({ message: 'Question editing successfully' });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        });
+}
+
 exports.deleteQuestion = (req, res) => {
     const document = db.doc(`/question/${req.params.questionId}`);
 

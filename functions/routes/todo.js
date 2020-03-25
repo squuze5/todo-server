@@ -72,6 +72,42 @@ exports.getTodo = (req, res) => {
         });
 }
 
+exports.editTodo = (req, res) => {
+    const document = db.doc(`/todo/${req.params.todoId}`);
+    let editProject = {
+        body: req.body.body
+    }
+
+    if (editTodo.name == '') {
+        res.status(400).json({ error: 'Must not be empty' });
+    }
+
+    document
+        .get()
+        .then(doc => {
+            if (!doc.exists) {
+                return res.status(404).json({
+                    error: 'Todo not found'
+                });
+            }
+            if (doc.data().userHandle !== req.user.handle) {
+                return res.status(403).json({
+                    error: 'Unauthorized'
+                });
+            } else {
+                return document.update(editProject);
+            }
+        })
+        .then(() => {
+            res.json({ message: 'Todo editing successfully' });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        });
+
+}
+
 exports.deleteTodo = (req, res) => {
     const document = db.doc(`/todo/${req.params.todoId}`);
 

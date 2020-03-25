@@ -58,3 +58,11 @@ exports.validateUserDetails = (data) => {
 
     return userDetails;
 }
+
+exports.validateEditProject = (data) => {
+    let projectData = {};
+
+    if (!isEmpty(data.body.trim())) {
+        projectData.body = data.body;
+    }
+}
