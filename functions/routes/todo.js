@@ -42,3 +42,32 @@ exports.postOneTodo = (req, res) => {
             console.error(err);
         });
 }
+
+exports.getTodo = (req, res) => {
+    let todoData = {};
+    
+    db  
+        .doc(`/todo/${req.params.todoId}`)
+        .get()
+        .then((doc) => {
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Todo not found' });
+            }
+            todoData = doc.data();
+            todoData.todoId = doc.id;
+            return db.collection('question')
+                .where('todoId', '==', req.params.todoId)
+                .get();
+        })
+        .then(data => {
+            todoData.questions = [];
+            data.forEach(doc => {
+                todoData.questions.push(doc.data());
+            });
+            return res.json(todoData); 
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: err.code });
+        });
+}
