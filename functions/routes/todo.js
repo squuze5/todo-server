@@ -78,7 +78,7 @@ exports.editTodo = (req, res) => {
         body: req.body.body
     }
 
-    if (editTodo.name == '') {
+    if (editProject.body == '') {
         res.status(400).json({ error: 'Must not be empty' });
     }
 
